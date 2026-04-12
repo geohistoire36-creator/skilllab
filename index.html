@@ -1,0 +1,2663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>king king - super</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Couleurs principales adaptées pour le thème sombre */
+            --primary: #3b82f6; 
+            --success: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --bonus: #8b5cf6;
+            
+            /* Couleurs de fond sombres */
+            --bg: #121212;
+            --white: #1e1e1e; /* Remplace le blanc par un gris très foncé pour les cartes */
+            --card-dark: #27272a;
+            --input-bg: #2d2d30;
+            
+            /* Textes et bordures */
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: #3f3f46;
+            
+            /* Dégradé fond authentification */
+            --auth-bg: linear-gradient(135deg, #0f172a 0%, #171717 100%);
+        }
+
+        /* --- STYLES AUTHENTIFICATION --- */
+        #authSection {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--auth-bg);
+            z-index: 5000; display: flex;
+            justify-content: center; align-items: center; padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .auth-card {
+            background: var(--white);
+            width: 100%; max-width: 420px;
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease-out;
+            display: flex; flex-direction: column;
+            box-sizing: border-box;
+            color: var(--text-main);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-logo { text-align: center; margin-bottom: 30px; }
+        .logo-circle {
+            width: 80px; height: 80px; background: #1e3a8a;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 15px auto; color: var(--primary); font-size: 2.2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .auth-logo h3 { margin: 0; font-size: 1.6rem; color: var(--text-main); font-weight: 800; }
+        .auth-logo p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        .auth-form { width: 100%; }
+
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group i {
+            position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 1.1rem; transition: 0.3s;
+        }
+        .input-group input:focus + i, .input-wrapper input:focus + i { color: var(--primary); }
+        
+        .input-group input {
+            width: 100%; padding: 16px 16px 16px 50px; border-radius: 14px;
+            border: 2px solid var(--border-color); font-size: 1rem; box-sizing: border-box;
+            outline: none; transition: 0.3s; background: var(--input-bg); color: var(--text-main);
+        }
+        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+
+        .phone-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .country-code {
+            padding: 16px 10px; border-radius: 14px; border: 2px solid var(--border-color);
+            background: var(--input-bg); font-weight: bold; outline: none; transition: 0.3s;
+            color: var(--text-main); cursor: pointer; font-size: 0.95rem; width: 110px;
+        }
+        .country-code:focus { border-color: var(--primary); }
+        
+        .phone-group .input-wrapper { position: relative; flex: 1; }
+        .phone-group .input-wrapper i {
+            position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 1.1rem;
+        }
+        .phone-group .input-wrapper input {
+            width: 100%; padding: 16px 16px 16px 50px; border-radius: 14px;
+            border: 2px solid var(--border-color); font-size: 1rem; box-sizing: border-box;
+            outline: none; transition: 0.3s; background: var(--input-bg); color: var(--text-main);
+        }
+        .phone-group .input-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+
+        .btn-auth {
+            width: 100%; background: var(--primary); color: white; padding: 18px;
+            border-radius: 14px; font-weight: 700; border: none; margin-top: 15px;
+            cursor: pointer; font-size: 1.1rem; transition: 0.3s;
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.25);
+        }
+        .btn-auth:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-auth:active { transform: translateY(0); }
+
+        .auth-switch { text-align: center; margin-top: 25px; color: var(--text-muted); font-size: 0.95rem; }
+        .auth-switch b { color: var(--primary); cursor: pointer; transition: 0.2s; font-weight: 700; }
+        .auth-switch b:hover { text-decoration: underline; color: #60a5fa; }
+
+        /* --- STYLES GENERAUX --- */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; }
+        section { display: none; animation: fadeIn 0.3s ease; }
+        section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .wallet-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+        }
+        
+        .linked-card-display {
+            display: none;
+            background: linear-gradient(135deg, #0f172a, #1d4ed8);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .linked-card-display::after {
+            content: 'VISA';
+            position: absolute; bottom: 15px; right: 20px;
+            font-style: italic; font-weight: bold; font-size: 1.2rem; opacity: 0.5;
+        }
+        .chip { width: 35px; height: 25px; background: #f59e0b; border-radius: 4px; margin-bottom: 15px; }
+        .card-balance-tag { position: absolute; top: 20px; right: 20px; text-align: right; }
+
+        .main-balance { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px; }
+        .main-balance h2 { font-size: 2.2rem; margin: 5px 0; color: #fff; }
+        
+        .sub-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-item { padding: 5px; }
+        .stat-item small { font-size: 0.7rem; opacity: 0.8; display: block; margin-bottom: 2px; }
+        .stat-item div { font-weight: bold; font-size: 1rem; }
+
+        .txt-income { color: var(--success); }
+        .txt-refer { color: var(--accent); }
+        .txt-withdraw { color: #fda4af; }
+        .txt-bonus { color: #c4b5fd; }
+
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn {
+            border: none; border-radius: 12px; padding: 14px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+            transition: 0.2s; text-decoration: none;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-recharge { background: var(--success); color: white; }
+        .btn-withdraw { background: var(--primary); color: white; }
+
+        /* --- STYLES SERVICES --- */
+        .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .service-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+        .service-icon { 
+            width: 55px; height: 55px; border-radius: 16px; 
+            display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2); font-size: 1.3rem;
+            transition: transform 0.2s;
+        }
+        .service-item:active .service-icon { transform: scale(0.9); }
+        
+        .icon-equipe { background: #1e3a8a; color: #bfdbfe; }
+        .icon-service { background: #064e3b; color: #86efac; }
+        .icon-cadeau { background: #78350f; color: #fde68a; }
+        .icon-infos { background: #334155; color: #cbd5e1; }
+
+        .service-item span { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+
+        .menu-list { background: var(--white); border-radius: 15px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .menu-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px; border-bottom: 1px solid var(--border-color); cursor: pointer;
+        }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item i.icon { width: 30px; color: var(--primary); font-size: 1.1rem; }
+        .menu-item span { flex: 1; font-weight: 500; font-size: 0.95rem; color: var(--text-main); }
+
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: var(--bg); display: none;
+            flex-direction: column; z-index: 2000;
+        }
+        .modal-fullscreen {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            background: var(--bg);
+        }
+        .modal-top-bar {
+            padding: 20px; background: var(--white); border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 15px; color: var(--text-main);
+        }
+        .modal-top-bar h3 { margin: 0; flex: 1; font-size: 1.1rem; }
+        .modal-body { padding: 20px; flex: 1; overflow-y: auto; text-align: center; }
+
+        .modal-body input, .modal-body select {
+            width: 100%; padding: 15px; margin: 10px 0; box-sizing: border-box;
+            border: 2px solid var(--border-color); border-radius: 12px; text-align: center; 
+            font-size: 1.1rem; background: var(--input-bg); color: var(--text-main);
+        }
+
+        .amount-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .amount-option {
+            padding: 15px; border: 2px solid var(--border-color); border-radius: 12px;
+            font-weight: bold; cursor: pointer; background: var(--white); transition: 0.2s;
+            color: var(--text-main);
+        }
+        .amount-option:active { background: var(--success); color: white; border-color: var(--success); }
+
+        .btn-logout {
+            width: 100%; background: #450a0a; color: #fca5a5;
+            border: 1px solid #7f1d1d; padding: 15px; border-radius: 12px;
+            font-weight: bold; margin-bottom: 20px; cursor: pointer;
+        }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; height: 70px;
+            background: var(--white); display: flex; border-top: 1px solid var(--border-color);
+        }
+        .nav-item {
+            background: none; border: none; color: var(--text-muted); flex: 1;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .nav-item.active { color: var(--primary); }
+
+        #bonusModal { background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+        .bonus-card {
+            background: var(--white); width: 85%; max-width: 400px; padding: 25px;
+            border-radius: 20px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .service-card {
+            background: var(--white); border-radius: 15px; padding: 20px; margin-bottom: 15px;
+            text-align: left; border-left: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .service-card h4 { margin: 0 0 10px 0; color: var(--primary); }
+        .service-card p { margin: 5px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+        
+        .info-box { background: #1e3a8a; border: 1px solid #3730a3; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.85rem; color: #bfdbfe; }
+        .warning-box { background: #422006; border: 1px solid #78350f; padding: 12px; border-radius: 12px; margin-top: 15px; margin-bottom: 20px; text-align: left; font-size: 0.85rem; color: #fde68a; }
+        .stat-box { background: var(--white); padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        /* --- STYLES PRODUITS (VIP) MODIFIÉS : CARRÉS ET AVEC IMAGES --- */
+        .product-card {
+            background: linear-gradient(145deg, #27272a 0%, #1e1e1e 100%);
+            border-radius: 14px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            aspect-ratio: 1 / 1;
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; width: 4px;
+            background: linear-gradient(180deg, var(--primary), var(--bonus));
+            z-index: 2;
+        }
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 45%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .product-content {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 5px;
+        }
+        .product-header h3 {
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .product-header .price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .product-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            text-align: center;
+        }
+        .p-stat {
+            flex: 1;
+            background: rgba(0,0,0,0.2);
+            padding: 8px 4px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .p-stat span {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .p-stat b {
+            font-size: 0.95rem;
+            color: #fff;
+        }
+        .product-card .btn-recharge {
+            background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%) !important;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2) !important;
+            font-size: 0.95rem !important;
+            border-radius: 10px !important;
+            margin-top: 5px !important;
+            padding: 12px !important;
+            width: 100% !important;
+            transition: all 0.2s ease !important;
+        }
+        .product-card .btn-recharge:active {
+            transform: scale(0.98) !important;
+        }
+
+        /* --- NOUVEAUX STYLES POUR LA GRILLE VIP (2 COLONNES) --- */
+        .vip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .vip-grid .product-card {
+            aspect-ratio: auto;
+            margin-bottom: 0;
+            min-height: 250px;
+        }
+        .vip-grid .product-image {
+            height: 100px;
+        }
+        .vip-grid .product-content {
+            padding: 10px;
+        }
+        .vip-grid .product-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+        .vip-grid .product-header h3 {
+            font-size: 0.9rem;
+        }
+        .vip-grid .product-header .price {
+            font-size: 0.95rem;
+        }
+        .vip-grid .product-stats {
+            gap: 4px;
+        }
+        .vip-grid .p-stat {
+            padding: 5px 2px;
+        }
+        .vip-grid .p-stat span {
+            font-size: 0.5rem;
+        }
+        .vip-grid .p-stat b {
+            font-size: 0.75rem;
+        }
+        .vip-grid .product-card .btn-recharge {
+            padding: 8px !important;
+            font-size: 0.8rem !important;
+            margin-top: 8px !important;
+        }
+
+        /* --- STYLES ADMIN --- */
+        .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+        .admin-tab-btn { flex: 1 1 30%; padding: 12px; background: var(--card-dark); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.85rem;}
+        .admin-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .admin-action-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: bold; margin: 2px; }
+        .btn-edit { background: var(--accent); color: white; }
+        .btn-block { background: var(--danger); color: white; }
+        .btn-unblock { background: var(--success); color: white; }
+        .btn-approve { background: var(--success); color: white; }
+        .btn-reject { background: var(--danger); color: white; }
+        .friend-info { font-size: 0.8rem; background: rgba(255,255,255,0.05); padding: 5px; margin: 2px 0; border-radius: 4px; display: inline-block; white-space: nowrap; }
+        
+        .admin-table-wrapper { 
+            overflow-x: auto; 
+            margin-top: 15px; 
+            background: var(--white); 
+            border-radius: 10px; 
+            padding: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .admin-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 0.85rem; 
+            color: var(--text-main); 
+            text-align: left; 
+            white-space: nowrap;
+        }
+        .admin-table th { 
+            padding: 12px 10px; 
+            background: var(--card-dark); 
+            color: var(--primary); 
+            border-bottom: 2px solid var(--border-color); 
+        }
+        .admin-table td { 
+            padding: 10px; 
+            border-bottom: 1px solid var(--border-color); 
+            vertical-align: middle;
+        }
+
+        /* --- NOUVEAUX STYLES POUR LA VRAIE ALERTE PERSONNALISÉE --- */
+        .custom-alert-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .custom-alert-box {
+            background: var(--white); width: 85%; max-width: 320px;
+            border-radius: 20px; padding: 25px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            animation: alertPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border-color);
+        }
+        @keyframes alertPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .custom-alert-icon {
+            font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;
+        }
+        .custom-alert-text {
+            color: var(--text-main); font-size: 1.05rem; margin-bottom: 25px; line-height: 1.5; font-weight: 500;
+        }
+        .custom-alert-btn {
+            background: var(--primary); color: white; border: none; padding: 14px 25px;
+            border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem;
+            transition: 0.2s;
+        }
+        .custom-alert-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <div id="authSection">
+        <div id="signupForm" class="auth-card" style="display: flex;">
+            <div class="auth-logo">
+                <div class="logo-circle"><i class="fas fa-user-plus"></i></div>
+                <h3>Créer un compte</h3>
+                <p>Rejoignez InvestApp aujourd'hui</p>
+            </div>
+            <div class="auth-form">
+                <div class="phone-group">
+                    <select class="country-code" id="regCountryCode">
+                        <option value="+226">🇧🇫 +226</option>
+                        <option value="+225">🇨🇮 +225</option>
+                    </select>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone-alt"></i>
+                        <input type="tel" id="regPhone" placeholder="Numéro de téléphone">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPass" placeholder="Mot de passe">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-shield-alt"></i>
+                    <input type="password" id="regPassConfirm" placeholder="Confirmer le mot de passe">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-user-tag"></i>
+                    <input type="text" id="regInvite" placeholder="Code de parrainage (Optionnel)">
+                </div>
+                <button class="btn-auth" onclick="handleSignup()">S'INSCRIRE</button>
+            </div>
+            <div class="auth-switch">Déjà un compte ? <b onclick="showLogin()">Se connecter</b></div>
+        </div>
+
+        <div id="loginForm" class="auth-card" style="display: none;">
+            <div class="auth-logo">
+                <div class="logo-circle"><i class="fas fa-sign-in-alt"></i></div>
+                <h3>Bon retour !</h3>
+                <p>Connectez-vous pour continuer</p>
+            </div>
+            <div class="auth-form">
+                <div class="phone-group">
+                    <select class="country-code" id="logCountryCode">
+                        <option value="+226">🇧🇫 +226</option>
+                        <option value="+225">🇨🇮 +225</option>
+                    </select>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone-alt"></i>
+                        <input type="tel" id="logPhone" placeholder="Numéro de téléphone">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="logPass" placeholder="Mot de passe">
+                </div>
+                <button class="btn-auth" onclick="handleLogin()">SE CONNECTER</button>
+            </div>
+            <div class="auth-switch">Nouveau ici ? <b onclick="showSignup()">Créer un compte</b></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="document.getElementById('historyModal').style.display='none'" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Histoire de retrait</h3>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <div id="historyContainer">
+                    <p style="text-align:center; color: var(--text-muted); font-style: italic; margin-top: 20px;">Aucun retrait pour le moment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="document.getElementById('orderModal').style.display='none'" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Mes Commandes</h3>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <div id="orderContainer">
+                    <p style="text-align:center; color: var(--text-muted); font-style: italic; margin-top: 20px;">Aucune commande pour le moment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="serviceModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="document.getElementById('serviceModal').style.display='none'" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Service Client & Aide</h3>
+            </div>
+            <div class="modal-body">
+                <div class="service-card">
+                    <h4><i class="fas fa-headset"></i> Support 24/7</h4>
+                    <p>Notre équipe est disponible pour répondre à vos questions concernant vos investissements, dépôts ou retraits.</p>
+                </div>
+                <div class="service-card">
+                    <h4><i class="fab fa-whatsapp"></i> Communauté WhatsApp</h4>
+                    <p>Rejoignez notre groupe officiel pour recevoir les dernières informations, preuves de paiements et codes bonus quotidiens.</p>
+                </div>
+                <div class="service-card">
+                    <h4><i class="fas fa-clock"></i> Délais de traitement</h4>
+                    <p><b>Dépôts :</b> Instantanés après confirmation.<br><b>Retraits :</b> Entre 10h00 et 17h00 (Traitement sous 1h à 24h).</p>
+                </div>
+                <button class="btn btn-recharge" style="width: 100%; margin-top: 20px; padding: 18px; background: #25d366;" onclick="goToWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> REJOINDRE LE GROUPE
+                </button>
+                <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.8rem;">Numéro direct : +226 74 25 25 35</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="rechargeModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="document.getElementById('rechargeModal').style.display='none'" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Recharger le compte</h3>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Entrez le montant manuellement</p>
+                <input type="number" id="customAmount" placeholder="Montant (ex: 3000)">
+                <p style="color: var(--danger); font-size: 0.8rem; margin-top: -5px; font-weight: 600;">* Dépôt minimum 3000F</p>
+                
+                <button class="btn btn-recharge" style="width: 100%; margin-top: 15px; padding: 18px;" onclick="goToStep2()">
+                    Suivant <i class="fas fa-chevron-right" style="margin-left: 10px;"></i>
+                </button>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 30px 0 10px 0;">Ou sélectionnez un montant rapide :</p>
+                <div class="amount-grid">
+                    <div class="amount-option" onclick="handleQuickSelect('3000')">3000F</div>
+                    <div class="amount-option" onclick="handleQuickSelect('5000')">5000F</div>
+                    <div class="amount-option" onclick="handleQuickSelect('10000')">10000F</div>
+                    <div class="amount-option" onclick="handleQuickSelect('15000')">15000F</div>
+                    <div class="amount-option" onclick="handleQuickSelect('20000')">20000F</div>
+                    <div class="amount-option" onclick="handleQuickSelect('25000')">25000F</div>
+                    <div class="amount-option" onclick="handleQuickSelect('35000')" style="grid-column: span 2;">35000F</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="withdrawModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="document.getElementById('withdrawModal').style.display='none'" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Retirer des fonds</h3>
+            </div>
+            <div class="modal-body">
+                <div style="background: var(--white); padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    <p style="color: var(--text-muted); margin: 0;">Solde Disponible</p>
+                    <h2 id="withdrawAvailableBalance" style="margin: 5px 0; color: var(--success);">500F</h2>
+                </div>
+
+                <div id="linkedCardDisplay" class="linked-card-display">
+                    <div class="card-balance-tag">
+                        <small style="font-size: 0.6rem; opacity: 0.8; display: block;">SOLDE</small>
+                        <span id="linkedCardAvailableBalance" style="font-weight: bold; font-size: 1rem;">500F</span>
+                    </div>
+                    <div class="chip"></div>
+                    <div id="displayMethod" style="font-size: 0.8rem; margin-bottom: 5px; opacity: 0.8; letter-spacing: 1px;">ORANGE MONEY</div>
+                    <div id="displayNum" style="font-size: 1.2rem; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px;">00 00 00 00 00</div>
+                    <div id="displayName" style="font-size: 0.9rem; text-transform: uppercase; opacity: 0.9;">NOM UTILISATEUR</div>
+                </div>
+
+                <div class="warning-box">
+                    <p style="margin: 3px 0;"><i class="fas fa-info-circle"></i> <b>Montant minimum :</b> 500F</p>
+                    <p style="margin: 3px 0;"><i class="fas fa-history"></i> <b>Limite :</b> 2 retraits par jour</p>
+                    <p style="margin: 3px 0;"><i class="fas fa-clock"></i> <b>Heures :</b> 10h00 à 17h00</p>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Entrez le montant à retirer</p>
+                <input type="number" id="withdrawAmount" placeholder="Montant (ex: 500)" oninput="calculateFees()">
+                
+                <div id="feeBox" style="display: none; background: #27272a; padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: left; border-left: 4px solid var(--primary);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-main);">
+                        <span>Frais de retrait (17%) :</span>
+                        <span id="feeAmount" style="color: var(--danger); font-weight: bold;">0F</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.95rem; margin-top: 5px; font-weight: bold; color: var(--text-main);">
+                        <span>Montant à recevoir :</span>
+                        <span id="netAmount" style="color: var(--success);">0F</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-withdraw" style="width: 100%; margin-top: 10px; padding: 18px;" onclick="confirmWithdraw()">
+                    CONFIRMER LE RETRAIT
+                </button>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 25px 0 10px 0;">Montants rapides :</p>
+                <div class="amount-grid">
+                    <div class="amount-option" onclick="setWithdrawQuick('500')">500F</div>
+                    <div class="amount-option" onclick="setWithdrawQuick('1000')">1000F</div>
+                    <div class="amount-option" onclick="setWithdrawQuick('5000')">5000F</div>
+                    <div class="amount-option" onclick="setWithdrawQuick('10000')">10000F</div>
+                </div>
+
+                <div class="menu-list" style="margin-top: 30px;">
+                    <div class="menu-item" onclick="openLinkAccountModal()">
+                        <i class="fas fa-university icon"></i>
+                        <span>Lier un compte de retrait</span>
+                        <i class="fas fa-plus-circle" style="color: var(--success);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="linkAccountModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="document.getElementById('linkAccountModal').style.display='none'" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Lier un compte</h3>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-muted); font-size: 0.9rem; text-align: left; margin-left: 5px;">Nom complet du bénéficiaire</p>
+                <input type="text" id="accName" placeholder="Ex: Jean Dupont">
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; text-align: left; margin-left: 5px; margin-top: 10px;">Numéro de téléphone</p>
+                <input type="tel" id="accNumber" placeholder="Ex: 0102030405">
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; text-align: left; margin-left: 5px; margin-top: 10px;">Mode de paiement</p>
+                <select id="accMethod">
+                    <option value="Orange Money">Orange Money 🟠</option>
+                    <option value="Moov Money">Moov Money 🔵</option>
+                    <option value="Wave">Wave 🌊</option>
+                </select>
+                
+                <button class="btn btn-recharge" style="width: 100%; margin-top: 25px; padding: 18px;" onclick="saveAccount()">
+                    ENREGISTRER LE COMPTE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="backToStep1()" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Informations de paiement</h3>
+            </div>
+            <div class="modal-body">
+                <div style="background: var(--white); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    <p style="color: var(--text-muted); margin: 0;">Montant à payer</p>
+                    <h2 id="displayAmount" style="margin: 5px 0; color: var(--primary);">0F</h2>
+                </div>
+                
+                <p style="color: var(--text-muted); font-size: 0.9rem; text-align: left; margin-left: 5px;">Sélectionnez votre Pays</p>
+                <select id="userCountrySelect" onchange="handleCountryChange()">
+                    <option value="Burkina Faso">Burkina Faso 🇧🇫</option>
+                    <option value="Côte d'Ivoire">Côte d'Ivoire 🇨🇮</option>
+                </select>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; text-align: left; margin-left: 5px; margin-top: 10px;">Méthode de paiement</p>
+                <select id="paymentMethodSelect" onchange="updatePaymentInstructions()">
+                    <option value="Orange Money">Orange Money 🟠</option>
+                    <option value="Moov Money">Moov Money 🔵</option>
+                </select>
+
+                <div id="paymentInstructions" style="background: #27272a; padding: 15px; border-radius: 12px; margin: 15px 0; border: 1px solid var(--border-color); text-align: left;">
+                    <p id="labelCode" style="margin: 5px 0; font-weight: bold; color: var(--text-main);">Code de transfert :</p>
+                    <div id="ussdCode" style="font-family: monospace; font-size: 1.1rem; color: var(--primary); background: #1e1e1e; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 10px; word-break: break-all; border: 1px dashed var(--primary);">
+                        *144*2*1*66867654*3000#
+                    </div>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-main);">Bénéficiaire : <span id="beneficiaryName" style="font-weight: bold;">MOUSSA</span></p>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.9rem; text-align: left; margin-left: 5px; margin-top: 15px;">Numéro utilisé pour le dépôt</p>
+                <input type="tel" id="userNumber" placeholder="Ex: 01234567">
+                
+                <button class="btn btn-success" style="width: 100%; margin-top: 20px; background: var(--success); color: white; padding: 18px;" onclick="confirmDeposit()">
+                    CONFIRMER LE DÉPÔT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="bonusModal">
+        <div class="bonus-card">
+            <i class="fas fa-gift" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 10px;"></i>
+            <h3 style="color: var(--text-main);">Activer un Code Bonus</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Entrez votre code pour recevoir votre récompense</p>
+            <input type="text" id="bonusCodeInput" placeholder="EX: VIP2026" style="width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 12px; text-align: center; font-size: 1.1rem; box-sizing: border-box; background: var(--input-bg); color: var(--text-main);">
+            <button class="btn btn-withdraw" style="width: 100%; margin-top: 15px; padding: 15px;" onclick="closeBonusModal()">Confirmer</button>
+            <p onclick="document.getElementById('bonusModal').style.display='none'" style="margin-top: 15px; color: var(--danger); cursor: pointer; font-size: 0.9rem; font-weight: bold;">Annuler</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="inviteDetailsModal">
+        <div class="modal-fullscreen">
+            <div class="modal-top-bar">
+                <i class="fas fa-arrow-left" onclick="document.getElementById('inviteDetailsModal').style.display='none'" style="font-size: 1.4rem; cursor: pointer;"></i>
+                <h3>Détails des Invités</h3>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                
+                <div class="stat-box" style="border-left: 4px solid var(--primary); margin-bottom: 15px; text-align: left;">
+                    <h4 style="margin: 0 0 10px 0; color: var(--primary);">Niveau A</h4>
+                    <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-muted); font-weight: bold;">Dépôt total de ce niveau : <span id="levelADepositTotal" style="color: var(--success);">0F</span></p>
+                    <div id="levelADetailsList" style="font-size: 0.85rem; color: var(--text-main); border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <div style="text-align: center; color: var(--text-muted); font-style: italic;">Chargement...</div>
+                    </div>
+                </div>
+
+                <div class="stat-box" style="border-left: 4px solid var(--success); margin-bottom: 15px; text-align: left;">
+                    <h4 style="margin: 0 0 10px 0; color: var(--success);">Niveau B</h4>
+                    <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-muted); font-weight: bold;">Dépôt total de ce niveau : <span id="levelBDepositTotal" style="color: var(--success);">0F</span></p>
+                    <div id="levelBDetailsList" style="font-size: 0.85rem; color: var(--text-main); border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <div style="text-align: center; color: var(--text-muted); font-style: italic;">Chargement...</div>
+                    </div>
+                </div>
+
+                <div class="stat-box" style="border-left: 4px solid var(--accent); margin-bottom: 15px; text-align: left;">
+                    <h4 style="margin: 0 0 10px 0; color: var(--accent);">Niveau C</h4>
+                    <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-muted); font-weight: bold;">Dépôt total de ce niveau : <span id="levelCDepositTotal" style="color: var(--success);">0F</span></p>
+                    <div id="levelCDetailsList" style="font-size: 0.85rem; color: var(--text-main); border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <div style="text-align: center; color: var(--text-muted); font-style: italic;">Chargement...</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section id="accueil" class="active">
+            <h2 style="margin-top:0">Tableau de Bord</h2>
+            
+            <div class="wallet-card">
+                <div class="main-balance">
+                    <small>Solde Total</small>
+                    <h2>500F</h2>
+                </div>
+                <div class="sub-stats">
+                    <div class="stat-item">
+                        <small>Revenus Quotidiens</small>
+                        <div class="txt-income">0F</div>
+                    </div>
+                    <div class="stat-item">
+                        <small>Solde Parrainage</small>
+                        <div class="txt-refer">0F</div>
+                    </div>
+                    <div class="stat-item">
+                        <small>Total Retraits</small>
+                        <div class="txt-withdraw">0F</div>
+                    </div>
+                    <div class="stat-item">
+                        <small>Bonus Actif</small>
+                        <div class="txt-bonus">500F</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-grid">
+                <button class="btn btn-recharge" onclick="openRechargeModal()">
+                    <i class="fas fa-plus-circle"></i> Recharger
+                </button>
+                <button class="btn btn-withdraw" onclick="openWithdrawModal()">
+                    <i class="fas fa-arrow-down"></i> Retrait
+                </button>
+            </div>
+
+            <h3 style="font-size: 1rem; margin-bottom: 10px;">Services Rapides</h3>
+            <div class="services-grid">
+                <div class="service-item" onclick="nav('equipe', document.getElementById('btn-nav-equipe'))">
+                    <div class="service-icon icon-equipe"><i class="fas fa-users"></i></div>
+                    <span>Équipe</span>
+                </div>
+                <div class="service-item" onclick="openServiceModal()">
+                    <div class="service-icon icon-service"><i class="fas fa-headset"></i></div>
+                    <span>Service</span>
+                </div>
+                <div class="service-item" onclick="openBonusModal()">
+                    <div class="service-icon icon-cadeau"><i class="fas fa-gift"></i></div>
+                    <span>Cadeau</span>
+                </div>
+                <div class="service-item" onclick="alert('Informations')">
+                    <div class="service-icon icon-infos"><i class="fas fa-info-circle"></i></div>
+                    <span>Infos</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="produits">
+            <h2 style="margin-top:0">Marché VIP</h2>
+
+            <div class="vip-grid">
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3><i class="fas fa-crown" style="color: #fcd34d;"></i> VIP 1</h3>
+                            <div class="price">3 000F</div>
+                        </div>
+                        <div class="product-stats">
+                            <div class="p-stat">
+                                <span>Quotidien</span>
+                                <b style="color: var(--success);">400F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Revenu Total</span>
+                                <b>24 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Cycle</span>
+                                <b>60 Jours</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-recharge" onclick="investProduct(3000, 'VIP 1', '400F', '24 000F', '60 Jours', 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80')">
+                            Investir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3><i class="fas fa-crown" style="color: #f59e0b;"></i> VIP 2</h3>
+                            <div class="price">6 000F</div>
+                        </div>
+                        <div class="product-stats">
+                            <div class="p-stat">
+                                <span>Quotidien</span>
+                                <b style="color: var(--success);">1 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Revenu Total</span>
+                                <b>60 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Cycle</span>
+                                <b>60 Jours</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-recharge" onclick="investProduct(6000, 'VIP 2', '1 000F', '60 000F', '60 Jours', 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80')">
+                            Investir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3><i class="fas fa-gem" style="color: #60a5fa;"></i> VIP 3</h3>
+                            <div class="price">10 000F</div>
+                        </div>
+                        <div class="product-stats">
+                            <div class="p-stat">
+                                <span>Quotidien</span>
+                                <b style="color: var(--success);">2 200F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Revenu Total</span>
+                                <b>132 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Cycle</span>
+                                <b>60 Jours</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-recharge" onclick="investProduct(10000, 'VIP 3', '2 200F', '132 000F', '60 Jours', 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80')">
+                            Investir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3><i class="fas fa-gem" style="color: #c084fc;"></i> VIP 4</h3>
+                            <div class="price">15 000F</div>
+                        </div>
+                        <div class="product-stats">
+                            <div class="p-stat">
+                                <span>Quotidien</span>
+                                <b style="color: var(--success);">3 400F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Revenu Total</span>
+                                <b>204 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Cycle</span>
+                                <b>60 Jours</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-recharge" onclick="investProduct(15000, 'VIP 4', '3 400F', '204 000F', '60 Jours', 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80')">
+                            Investir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3><i class="fas fa-gem" style="color: #f43f5e;"></i> VIP 5</h3>
+                            <div class="price">20 000F</div>
+                        </div>
+                        <div class="product-stats">
+                            <div class="p-stat">
+                                <span>Quotidien</span>
+                                <b style="color: var(--success);">4 500F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Revenu Total</span>
+                                <b>270 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Cycle</span>
+                                <b>60 Jours</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-recharge" onclick="investProduct(20000, 'VIP 5', '4 500F', '270 000F', '60 Jours', 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80')">
+                            Investir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3><i class="fas fa-star" style="color: #2dd4bf;"></i> VIP 6</h3>
+                            <div class="price">25 000F</div>
+                        </div>
+                        <div class="product-stats">
+                            <div class="p-stat">
+                                <span>Quotidien</span>
+                                <b style="color: var(--success);">5 600F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Revenu Total</span>
+                                <b>336 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Cycle</span>
+                                <b>60 Jours</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-recharge" onclick="investProduct(25000, 'VIP 6', '5 600F', '336 000F', '60 Jours', 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80')">
+                            Investir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80');"></div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <h3><i class="fas fa-medal" style="color: #ef4444;"></i> VIP 7</h3>
+                            <div class="price">35 000F</div>
+                        </div>
+                        <div class="product-stats">
+                            <div class="p-stat">
+                                <span>Quotidien</span>
+                                <b style="color: var(--success);">8 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Revenu Total</span>
+                                <b>480 000F</b>
+                            </div>
+                            <div class="p-stat">
+                                <span>Cycle</span>
+                                <b>60 Jours</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-recharge" onclick="investProduct(35000, 'VIP 7', '8 000F', '480 000F', '60 Jours', 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80')">
+                            Investir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="equipe">
+            <h2 style="margin-top:0">Mon Équipe</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <div class="stat-box" onclick="openInviteDetailsModal()" style="border-top: 4px solid var(--primary); cursor: pointer;">
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0 0 5px 0;">Total Invités</p>
+                    <h3 id="totalInvites" style="margin: 0; color: var(--text-main);">0</h3> <p style="font-size: 0.7rem; color: var(--primary); margin: 5px 0 0 0; font-weight: bold;"><i class="fas fa-eye"></i> Voir détails</p>
+                </div>
+                
+                <div class="stat-box" style="border-top: 4px solid var(--success);">
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0 0 5px 0;">Commission Totale</p>
+                    <h3 id="totalCommission" style="margin: 0; color: var(--success);">0F</h3>
+                </div>
+            </div>
+            
+            <div class="stat-box" style="margin-bottom: 20px;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 10px 0;">Votre code d'invitation</p>
+                <h3 id="displayInviteCode" style="margin: 0 0 15px 0; color: var(--primary); letter-spacing: 2px;">CHARGEMENT...</h3>
+                <button class="btn btn-recharge" style="width: 100%; padding: 15px;" onclick="copyInviteLink()">
+                    <i class="fas fa-copy"></i> Copier le lien
+                </button>
+            </div>
+
+            <div class="info-box">
+                <p style="margin: 0 0 8px 0; font-size: 0.95rem;"><b><i class="fas fa-info-circle"></i> Comment ça marche ?</b></p>
+                <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
+                    <li><b>Niveau A (30%) :</b> Commission sur les dépôts de vos invités directs.</li>
+                    <li><b>Niveau B (2%) :</b> Commission sur les dépôts des invités de votre Niveau A.</li>
+                    <li><b>Niveau C (1%) :</b> Commission sur les dépôts des invités de votre Niveau B.</li>
+                </ul>
+            </div>
+
+            <div class="stat-box" style="border-left: 5px solid var(--primary); text-align: left; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; color: var(--text-main);">Niveau A <span style="color: var(--primary); font-size: 0.9rem;">(30%)</span></h3>
+                    <i class="fas fa-user-check" style="color: var(--primary); font-size: 1.2rem;"></i>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;">
+                    <span><i class="fas fa-users"></i> Nombre d'invités :</span>
+                    <span id="levelACount" style="font-weight: bold; color: var(--text-main);">0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem;">
+                    <span><i class="fas fa-wallet"></i> Commission reçue :</span>
+                    <span id="levelACommission" style="font-weight: bold; color: var(--success);">0F</span>
+                </div>
+            </div>
+
+            <div class="stat-box" style="border-left: 5px solid var(--success); text-align: left; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; color: var(--text-main);">Niveau B <span style="color: var(--success); font-size: 0.9rem;">(2%)</span></h3>
+                    <i class="fas fa-user-plus" style="color: var(--success); font-size: 1.2rem;"></i>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;">
+                    <span><i class="fas fa-users"></i> Nombre d'invités :</span>
+                    <span id="levelBCount" style="font-weight: bold; color: var(--text-main);">0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem;">
+                    <span><i class="fas fa-wallet"></i> Commission reçue :</span>
+                    <span id="levelBCommission" style="font-weight: bold; color: var(--success);">0F</span>
+                </div>
+            </div>
+
+            <div class="stat-box" style="border-left: 5px solid var(--accent); text-align: left; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; color: var(--text-main);">Niveau C <span style="color: var(--accent); font-size: 0.9rem;">(1%)</span></h3>
+                    <i class="fas fa-user-friends" style="color: var(--accent); font-size: 1.2rem;"></i>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;">
+                    <span><i class="fas fa-users"></i> Nombre d'invités :</span>
+                    <span id="levelCCount" style="font-weight: bold; color: var(--text-main);">0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem;">
+                    <span><i class="fas fa-wallet"></i> Commission reçue :</span>
+                    <span id="levelCCommission" style="font-weight: bold; color: var(--success);">0F</span>
+                </div>
+            </div>
+        </section>
+        
+        <section id="mien">
+            <h2 style="margin-top:0">Mon Compte</h2>
+            <div class="wallet-card">
+                <div class="main-balance">
+                    <small>Solde Total</small>
+                    <h2>500F</h2>
+                </div>
+                <div class="sub-stats">
+                    <div class="stat-item"><small>Revenus</small><div class="txt-income">0F</div></div>
+                    <div class="stat-item"><small>Parrainage</small><div class="txt-refer">0F</div></div>
+                    <div class="stat-item"><small>Retraits</small><div class="txt-withdraw">0F</div></div>
+                    <div class="stat-item"><small>Bonus</small><div class="txt-bonus">500F</div></div>
+                </div>
+            </div>
+
+            <div class="action-grid">
+                <button class="btn btn-recharge" onclick="openRechargeModal()"><i class="fas fa-plus-circle"></i> Recharger</button>
+                <button class="btn btn-withdraw" onclick="openWithdrawModal()"><i class="fas fa-arrow-down"></i> Retrait</button>
+            </div>
+
+            <div class="menu-list">
+                <div class="menu-item" onclick="openBonusModal()">
+                    <i class="fas fa-gift icon" style="color: var(--accent);"></i>
+                    <span>Code Bonus / Cadeau</span>
+                    <i class="fas fa-chevron-right" style="font-size: 0.8rem; opacity: 0.3;"></i>
+                </div>
+                <div class="menu-item" onclick="openLinkAccountModal()">
+                    <i class="fas fa-university icon"></i>
+                    <span>Lier un compte</span>
+                    <i class="fas fa-chevron-right" style="font-size: 0.8rem; opacity: 0.3;"></i>
+                </div>
+                <div class="menu-item" onclick="openOrderModal()">
+                    <i class="fas fa-shopping-bag icon"></i>
+                    <span>Mes Commandes</span>
+                    <i class="fas fa-chevron-right" style="font-size: 0.8rem; opacity: 0.3;"></i>
+                </div>
+                <div class="menu-item" onclick="openHistoryModal()">
+                    <i class="fas fa-history icon"></i>
+                    <span>Histoire de retrait</span>
+                    <i class="fas fa-chevron-right" style="font-size: 0.8rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>
+        </section>
+
+        <section id="admin">
+            <h2 style="margin-top:0; color: var(--primary);">Panel Administration</h2>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" id="tabUsersBtn" onclick="switchAdminTab('users')">Utilisateurs</button>
+                <button class="admin-tab-btn" id="tabDepositsBtn" onclick="switchAdminTab('deposits')">Dépôts attente</button>
+                <button class="admin-tab-btn" id="tabConfirmedDepositsBtn" onclick="switchAdminTab('confirmedDeposits')">Dépôts conf.</button>
+                <button class="admin-tab-btn" id="tabWithdrawalsBtn" onclick="switchAdminTab('withdrawals')">Retraits attente</button>
+                <button class="admin-tab-btn" id="tabBonusBtn" onclick="switchAdminTab('bonus')">Codes Bonus</button>
+            </div>
+
+            <div id="adminUsersSection">
+                <div class="stat-box" style="margin-bottom: 15px; border-left: 4px solid var(--danger);">
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 5px 0;">Total Utilisateurs</p>
+                    <h3 id="adminTotalUsers" style="margin: 0; color: var(--text-main);">0</h3>
+                </div>
+                
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Numéro</th>
+                                <th>Mot de passe</th>
+                                <th>Solde</th>
+                                <th>Amis Invités (Détails)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <tr><td colspan="5" style="text-align:center;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adminDepositsSection" style="display: none;">
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Heure</th>
+                                <th>N° Inscription</th>
+                                <th>N° Dépôt</th>
+                                <th>Montant</th>
+                                <th>Méthode</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminDepositsBody">
+                            <tr><td colspan="6" style="text-align:center;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adminConfirmedDepositsSection" style="display: none;">
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Heure</th>
+                                <th>N° Inscription</th>
+                                <th>N° Dépôt</th>
+                                <th>Montant</th>
+                                <th>Méthode</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminConfirmedDepositsBody">
+                            <tr><td colspan="5" style="text-align:center;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adminWithdrawalsSection" style="display: none;">
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Heure</th>
+                                <th>N° Inscription</th>
+                                <th>N° Compte</th> <th>Brut</th>
+                                <th>Net</th>
+                                <th>Méthode</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminWithdrawalsBody">
+                            <tr><td colspan="7" style="text-align:center;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adminBonusSection" style="display: none;">
+                <div class="stat-box" style="margin-bottom: 15px; text-align: left; border-left: 4px solid var(--bonus);">
+                    <h3 style="margin-top:0; color:var(--bonus);">Générer un Code Bonus</h3>
+                    <input type="text" id="adminBonusCode" placeholder="Code (ex: CADEAU26)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main);">
+                    <input type="number" id="adminBonusAmount" placeholder="Montant (ex: 500)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main);">
+                    <input type="number" id="adminBonusLimit" placeholder="Limite d'utilisation (ex: 50)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main);">
+                    <button class="btn btn-recharge" style="width:100%; background:var(--bonus);" onclick="createBonusCode()">Créer le code</button>
+                </div>
+                
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Montant</th>
+                                <th>Utilisations</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminBonusBody">
+                            <tr><td colspan="4" style="text-align:center;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="nav('accueil', this)"><i class="fas fa-home"></i><span style="font-size:0.7rem">Accueil</span></button>
+        <button class="nav-item" onclick="nav('produits', this)"><i class="fas fa-chart-line"></i><span style="font-size:0.7rem">Produits</span></button>
+        <button id="btn-nav-equipe" class="nav-item" onclick="nav('equipe', this)"><i class="fas fa-users"></i><span style="font-size:0.7rem">Équipe</span></button>
+        <button class="nav-item" onclick="nav('mien', this)"><i class="fas fa-user"></i><span style="font-size:0.7rem">Mien</span></button>
+        
+        <button id="adminTab" class="nav-item" style="display:none;" onclick="nav('admin', this)">
+            <i class="fas fa-user-shield"></i><span style="font-size:0.7rem">Admin</span>
+        </button>
+    </nav>
+
+    <div class="custom-alert-overlay" id="customAlertModal">
+        <div class="custom-alert-box">
+            <i class="fas fa-bell custom-alert-icon"></i>
+            <div class="custom-alert-text" id="customAlertMessage">Message</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">D'ACCORD</button>
+        </div>
+    </div> <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+    // --- SYSTÈME D'ALERTES PERSONNALISÉES (REMPLACE ALERT, CONFIRM, PROMPT) ---
+    function createCustomModalStyles() {
+        if(document.getElementById('custom-modal-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'custom-modal-styles';
+        style.innerHTML = `
+            .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 999999; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+            .custom-modal-overlay.show { opacity: 1; pointer-events: auto; }
+            .custom-modal-box { background: white; padding: 25px; border-radius: 15px; max-width: 85%; width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transform: scale(0.8); transition: transform 0.3s ease; display: flex; flex-direction: column; align-items: center; }
+            .custom-modal-overlay.show .custom-modal-box { transform: scale(1); }
+            .custom-modal-title { font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #1f2937; }
+            .custom-modal-message { font-size: 15px; margin-bottom: 25px; color: #4b5563; white-space: pre-wrap; line-height: 1.5; }
+            .custom-modal-input { width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
+            .custom-modal-input:focus { border-color: #3b82f6; }
+            .custom-modal-buttons { display: flex; justify-content: center; gap: 15px; width: 100%; }
+            .custom-modal-btn { flex: 1; padding: 12px 0; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; }
+            .custom-modal-btn.confirm { background: #3b82f6; color: white; }
+            .custom-modal-btn.confirm:hover { background: #2563eb; }
+            .custom-modal-btn.cancel { background: #f3f4f6; color: #4b5563; }
+            .custom-modal-btn.cancel:hover { background: #e5e7eb; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function showCustomAlert(message) {
+        return new Promise((resolve) => {
+            createCustomModalStyles();
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-modal-overlay';
+            overlay.innerHTML = `
+                <div class="custom-modal-box">
+                    <div class="custom-modal-title">Notification</div>
+                    <div class="custom-modal-message">${message}</div>
+                    <div class="custom-modal-buttons">
+                        <button class="custom-modal-btn confirm">Compris</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            requestAnimationFrame(() => overlay.classList.add('show'));
+            
+            overlay.querySelector('.confirm').onclick = () => {
+                overlay.classList.remove('show');
+                setTimeout(() => { document.body.removeChild(overlay); resolve(); }, 300);
+            };
+        });
+    }
+
+    function showCustomConfirm(message) {
+        return new Promise((resolve) => {
+            createCustomModalStyles();
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-modal-overlay';
+            overlay.innerHTML = `
+                <div class="custom-modal-box">
+                    <div class="custom-modal-title">Confirmation</div>
+                    <div class="custom-modal-message">${message}</div>
+                    <div class="custom-modal-buttons">
+                        <button class="custom-modal-btn cancel">Annuler</button>
+                        <button class="custom-modal-btn confirm">Oui</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            requestAnimationFrame(() => overlay.classList.add('show'));
+            
+            overlay.querySelector('.confirm').onclick = () => {
+                overlay.classList.remove('show');
+                setTimeout(() => { document.body.removeChild(overlay); resolve(true); }, 300);
+            };
+            overlay.querySelector('.cancel').onclick = () => {
+                overlay.classList.remove('show');
+                setTimeout(() => { document.body.removeChild(overlay); resolve(false); }, 300);
+            };
+        });
+    }
+
+    function showCustomPrompt(message, defaultValue = "") {
+        return new Promise((resolve) => {
+            createCustomModalStyles();
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-modal-overlay';
+            overlay.innerHTML = `
+                <div class="custom-modal-box">
+                    <div class="custom-modal-title">Action requise</div>
+                    <div class="custom-modal-message">${message}</div>
+                    <input type="text" class="custom-modal-input" value="${defaultValue}">
+                    <div class="custom-modal-buttons">
+                        <button class="custom-modal-btn cancel">Annuler</button>
+                        <button class="custom-modal-btn confirm">Valider</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            requestAnimationFrame(() => overlay.classList.add('show'));
+            
+            const input = overlay.querySelector('.custom-modal-input');
+            input.focus();
+            
+            overlay.querySelector('.confirm').onclick = () => {
+                const val = input.value;
+                overlay.classList.remove('show');
+                setTimeout(() => { document.body.removeChild(overlay); resolve(val); }, 300);
+            };
+            overlay.querySelector('.cancel').onclick = () => {
+                overlay.classList.remove('show');
+                setTimeout(() => { document.body.removeChild(overlay); resolve(null); }, 300);
+            };
+        });
+    }
+    // --- FIN SYSTÈME D'ALERTES ---
+
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBxqiQS0JLmjBTaLdud51FeRQelPc3Lkio",
+        authDomain: "king-53148.firebaseapp.com",
+        projectId: "king-53148",
+        storageBucket: "king-53148.firebasestorage.app",
+        messagingSenderId: "957894226077",
+        appId: "1:957894226077:web:438acf56976bc3a60a2474",
+        measurementId: "G-18LQN984HL"
+    };
+    
+    // Initialisation de Firebase et Firestore
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // GESTION GLOBALE DU SOLDE
+    let currentBalance = 500; 
+    let userDocListener = null;
+
+    function updateBalanceUI() {
+        // Met à jour les h2 du solde principal (Accueil & Mien)
+        const balanceElements = document.querySelectorAll('.main-balance h2');
+        balanceElements.forEach(el => {
+            el.innerText = currentBalance + "F";
+        });
+        // Met à jour le solde dans la modale de retrait
+        const withdrawAvailable = document.getElementById('withdrawAvailableBalance');
+        if(withdrawAvailable) withdrawAvailable.innerText = currentBalance + "F";
+        // Met à jour le solde sur la carte liée (si affichée)
+        const linkedCardBalance = document.getElementById('linkedCardAvailableBalance');
+        if(linkedCardBalance) linkedCardBalance.innerText = currentBalance + "F";
+    }
+
+    // --- STATISTIQUES ÉQUIPE ET DETAILS INVITES ---
+    function maskPhone(phone) {
+        if(!phone) return "Inconnu";
+        return "******" + phone.slice(-4);
+    }
+
+    function loadTeamStats(myCode) {
+        if (!myCode) return;
+        db.collection("users").get().then((snap) => {
+            let allUsers = [];
+            snap.forEach(doc => allUsers.push(doc.data()));
+
+            let levelA = allUsers.filter(u => u.inviteCode === myCode && u.inviteCode !== "");
+            let levelACodes = levelA.map(u => u.myInviteCode);
+
+            let levelB = allUsers.filter(u => levelACodes.includes(u.inviteCode) && u.inviteCode !== "");
+            let levelBCodes = levelB.map(u => u.myInviteCode);
+
+            let levelC = allUsers.filter(u => levelBCodes.includes(u.inviteCode) && u.inviteCode !== "");
+
+            document.getElementById('totalInvites').innerText = levelA.length + levelB.length + levelC.length;
+            document.getElementById('levelACount').innerText = levelA.length;
+            document.getElementById('levelBCount').innerText = levelB.length;
+            document.getElementById('levelCCount').innerText = levelC.length;
+
+            // Génération des détails par niveau
+            let sumA=0, sumB=0, sumC=0;
+            let htmlA='', htmlB='', htmlC='';
+
+            levelA.forEach(u => {
+                let dep = u.totalDeposited || 0; sumA += dep;
+                htmlA += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span><i class="fas fa-user-circle" style="color:var(--primary); margin-right:5px;"></i>${maskPhone(u.phone)}</span><b style="color:var(--success)">${dep}F</b></div>`;
+            });
+            levelB.forEach(u => {
+                let dep = u.totalDeposited || 0; sumB += dep;
+                htmlB += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span><i class="fas fa-user-circle" style="color:var(--success); margin-right:5px;"></i>${maskPhone(u.phone)}</span><b style="color:var(--success)">${dep}F</b></div>`;
+            });
+            levelC.forEach(u => {
+                let dep = u.totalDeposited || 0; sumC += dep;
+                htmlC += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span><i class="fas fa-user-circle" style="color:var(--accent); margin-right:5px;"></i>${maskPhone(u.phone)}</span><b style="color:var(--success)">${dep}F</b></div>`;
+            });
+
+            document.getElementById('levelADepositTotal').innerText = sumA + "F";
+            document.getElementById('levelBDepositTotal').innerText = sumB + "F";
+            document.getElementById('levelCDepositTotal').innerText = sumC + "F";
+
+            document.getElementById('levelADetailsList').innerHTML = htmlA || '<div style="text-align: center; color: var(--text-muted); font-style: italic;">Aucun invité</div>';
+            document.getElementById('levelBDetailsList').innerHTML = htmlB || '<div style="text-align: center; color: var(--text-muted); font-style: italic;">Aucun invité</div>';
+            document.getElementById('levelCDetailsList').innerHTML = htmlC || '<div style="text-align: center; color: var(--text-muted); font-style: italic;">Aucun invité</div>';
+
+        }).catch(err => console.error("Erreur stats équipe: ", err));
+    }
+
+    // --- DISTRIBUTION DE LA COMMISSION ---
+    function distributeCommission(buyerInviteCode, price) {
+        if(!buyerInviteCode) return;
+        
+        // Niveau A (30%)
+        db.collection("users").where("myInviteCode", "==", buyerInviteCode).get().then(snapA => {
+            if(snapA.empty) return;
+            let docA = snapA.docs[0];
+            let userA = docA.data();
+            let phoneA = docA.id;
+            
+            let commA = price * 0.30;
+            db.collection("users").doc(phoneA).update({
+                balance: firebase.firestore.FieldValue.increment(commA),
+                referralBalance: firebase.firestore.FieldValue.increment(commA),
+                commissionA: firebase.firestore.FieldValue.increment(commA)
+            });
+
+            // Niveau B (2%)
+            if(userA.inviteCode) {
+                db.collection("users").where("myInviteCode", "==", userA.inviteCode).get().then(snapB => {
+                    if(snapB.empty) return;
+                    let docB = snapB.docs[0];
+                    let userB = docB.data();
+                    let phoneB = docB.id;
+                    
+                    let commB = price * 0.02;
+                    db.collection("users").doc(phoneB).update({
+                        balance: firebase.firestore.FieldValue.increment(commB),
+                        referralBalance: firebase.firestore.FieldValue.increment(commB),
+                        commissionB: firebase.firestore.FieldValue.increment(commB)
+                    });
+
+                    // Niveau C (1%)
+                    if(userB.inviteCode) {
+                        db.collection("users").where("myInviteCode", "==", userB.inviteCode).get().then(snapC => {
+                            if(snapC.empty) return;
+                            let docC = snapC.docs[0];
+                            let phoneC = docC.id;
+                            
+                            let commC = price * 0.01;
+                            db.collection("users").doc(phoneC).update({
+                                balance: firebase.firestore.FieldValue.increment(commC),
+                                referralBalance: firebase.firestore.FieldValue.increment(commC),
+                                commissionC: firebase.firestore.FieldValue.increment(commC)
+                            });
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    // --- Ecouteur en temps réel pour le solde de l'utilisateur ---
+    function startUserListener(phone) {
+        if (userDocListener) {
+            userDocListener(); // Arrête l'ancienne écoute
+        }
+        userDocListener = db.collection("users").doc(phone).onSnapshot((doc) => {
+            if (doc.exists) {
+                const userData = doc.data();
+                currentBalance = userData.balance !== undefined ? userData.balance : 0;
+                
+                // Mise à jour de l'affichage des commissions
+                let refBal = userData.referralBalance || 0;
+                let commA = userData.commissionA || 0;
+                let commB = userData.commissionB || 0;
+                let commC = userData.commissionC || 0;
+
+                document.querySelectorAll('.txt-refer').forEach(el => el.innerText = refBal + "F");
+                document.getElementById('totalCommission').innerText = refBal + "F";
+                document.getElementById('levelACommission').innerText = commA + "F";
+                document.getElementById('levelBCommission').innerText = commB + "F";
+                document.getElementById('levelCCommission').innerText = commC + "F";
+
+                // Charger l'équipe
+                loadTeamStats(userData.myInviteCode);
+
+                localStorage.setItem('hasDeposited', userData.hasDeposited || 'false');
+                localStorage.setItem('hasInvested', userData.hasInvested || 'false');
+                
+                // Restaure la carte liée si elle existe dans Firebase
+                if(userData.linkedAccountNumber) {
+                    document.getElementById('displayName').innerText = userData.linkedAccountName;
+                    document.getElementById('displayNum').innerText = userData.linkedAccountNumber;
+                    document.getElementById('displayMethod').innerText = userData.linkedAccountMethod.toUpperCase();
+                    document.getElementById('linkedCardDisplay').style.display = 'block';
+                }
+
+                updateBalanceUI();
+            }
+        });
+    }
+
+    // --- Mise à jour de l'affichage du code d'invitation ---
+    function updateInviteUI() {
+        let code = localStorage.getItem('myInviteCode');
+        if(!code) code = "GÉNÉRATION...";
+        const displayEl = document.getElementById('displayInviteCode');
+        if(displayEl) displayEl.innerText = code;
+    }
+
+    // --- Génération du lien de parrainage et copie ---
+    function copyInviteLink() {
+        const code = localStorage.getItem('myInviteCode') || "INVIT2026";
+        // Construit l'URL avec le paramètre ?invite=LE_CODE
+        const link = window.location.origin + window.location.pathname + "?invite=" + code;
+        
+        navigator.clipboard.writeText(link).then(() => {
+            showCustomAlert("Lien d'invitation copié avec succès !\n\n" + link);
+        }).catch(err => {
+            // Solution de secours si clipboard.writeText échoue
+            const tempInput = document.createElement("input");
+            tempInput.value = link;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showCustomAlert("Lien d'invitation copié avec succès !\n\n" + link);
+        });
+    }
+
+    // --- VERIFICATION ADMIN ---
+    function checkAdmin(phone) {
+        if(phone === "+22666867654") {
+            document.getElementById('adminTab').style.display = 'flex';
+        } else {
+            document.getElementById('adminTab').style.display = 'none';
+        }
+    }
+
+    // --- SWITCH TABS ADMIN ---
+    function switchAdminTab(tab) {
+        document.getElementById('tabUsersBtn').classList.remove('active');
+        document.getElementById('tabDepositsBtn').classList.remove('active');
+        document.getElementById('tabConfirmedDepositsBtn').classList.remove('active');
+        document.getElementById('tabWithdrawalsBtn').classList.remove('active');
+        document.getElementById('tabBonusBtn').classList.remove('active');
+        
+        document.getElementById('adminUsersSection').style.display = 'none';
+        document.getElementById('adminDepositsSection').style.display = 'none';
+        document.getElementById('adminConfirmedDepositsSection').style.display = 'none';
+        document.getElementById('adminWithdrawalsSection').style.display = 'none';
+        document.getElementById('adminBonusSection').style.display = 'none';
+        
+        if(tab === 'users') {
+            document.getElementById('tabUsersBtn').classList.add('active');
+            document.getElementById('adminUsersSection').style.display = 'block';
+            loadAdminData();
+        } else if(tab === 'deposits') {
+            document.getElementById('tabDepositsBtn').classList.add('active');
+            document.getElementById('adminDepositsSection').style.display = 'block';
+            loadPendingDeposits();
+        } else if(tab === 'confirmedDeposits') {
+            document.getElementById('tabConfirmedDepositsBtn').classList.add('active');
+            document.getElementById('adminConfirmedDepositsSection').style.display = 'block';
+            loadConfirmedDeposits();
+        } else if(tab === 'withdrawals') {
+            document.getElementById('tabWithdrawalsBtn').classList.add('active');
+            document.getElementById('adminWithdrawalsSection').style.display = 'block';
+            loadPendingWithdrawals();
+        } else if(tab === 'bonus') {
+            document.getElementById('tabBonusBtn').classList.add('active');
+            document.getElementById('adminBonusSection').style.display = 'block';
+            loadAdminBonusCodes();
+        }
+    }
+
+    // --- CHARGER DONNEES ADMIN (UTILISATEURS) ---
+    function loadAdminData() {
+        const adminBody = document.getElementById('adminTableBody');
+        adminBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Chargement des données...</td></tr>';
+        
+        db.collection("users").get().then((querySnapshot) => {
+            const users = [];
+            querySnapshot.forEach((doc) => {
+                users.push(doc.data());
+            });
+            
+            document.getElementById('adminTotalUsers').innerText = users.length;
+            
+            let tbodyHtml = '';
+            users.forEach(u => {
+                let friends = users.filter(other => other.inviteCode === u.myInviteCode && u.myInviteCode);
+                let friendsHtml = friends.length > 0 
+                    ? friends.map(f => `<span class="friend-info">${f.phone} <b style="color:var(--success)">(+${f.totalDeposited || 0}F)</b></span><br>`).join('') 
+                    : '<span style="color:var(--text-muted); font-style:italic;">Aucun</span>';
+
+                let isBlocked = !!u.isBlocked;
+                let blockBtnStr = isBlocked 
+                    ? `<button class="admin-action-btn btn-unblock" onclick="toggleBlockUser('${u.phone}', true)">Débloquer</button>`
+                    : `<button class="admin-action-btn btn-block" onclick="toggleBlockUser('${u.phone}', false)">Bloquer</button>`;
+
+                tbodyHtml += `
+                    <tr style="${isBlocked ? 'background: rgba(239, 68, 68, 0.15);' : ''}">
+                        <td>${u.phone || '-'}</td>
+                        <td>${u.password || '-'}</td>
+                        <td style="color:var(--success); font-weight:bold;">${u.balance !== undefined ? u.balance : 0}F</td>
+                        <td>${friendsHtml}</td>
+                        <td>
+                            <button class="admin-action-btn btn-edit" onclick="editUserBalance('${u.phone}', ${u.balance || 0})">Modifier Solde</button>
+                            ${blockBtnStr}
+                        </td>
+                    </tr>
+                `;
+            });
+            adminBody.innerHTML = tbodyHtml;
+        }).catch((error) => {
+            adminBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger);">Erreur: ${error.message}</td></tr>`;
+        });
+    }
+
+    // --- FONCTIONS ACTIONS ADMIN ---
+    async function toggleBlockUser(phone, currentlyBlocked) {
+        if(await showCustomConfirm(`Voulez-vous vraiment ${currentlyBlocked ? 'débloquer' : 'bloquer'} l'utilisateur ${phone} ?`)) {
+            db.collection("users").doc(phone).update({
+                isBlocked: !currentlyBlocked
+            }).then(() => {
+                loadAdminData();
+            }).catch(err => showCustomAlert("Erreur : " + err.message));
+        }
+    }
+
+    async function editUserBalance(phone, currentBal) {
+        let newVal = await showCustomPrompt(`Nouveau solde (en FCFA) pour ${phone} :`, currentBal);
+        if(newVal !== null && newVal !== "") {
+            db.collection("users").doc(phone).update({
+                balance: parseFloat(newVal)
+            }).then(() => {
+                showCustomAlert("Solde mis à jour avec succès !");
+                loadAdminData();
+            }).catch(err => showCustomAlert("Erreur : " + err.message));
+        }
+    }
+
+    // --- SECTION BONUS ADMIN ---
+    function createBonusCode() {
+        let code = document.getElementById('adminBonusCode').value.trim().toUpperCase();
+        let amount = parseFloat(document.getElementById('adminBonusAmount').value);
+        let limit = parseInt(document.getElementById('adminBonusLimit').value);
+
+        if(!code || !amount || !limit) { showCustomAlert("Veuillez remplir tous les champs."); return; }
+
+        db.collection("bonusCodes").doc(code).set({
+            amount: amount,
+            limit: limit,
+            usedBy: [],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            showCustomAlert("Code bonus créé avec succès !");
+            document.getElementById('adminBonusCode').value = '';
+            document.getElementById('adminBonusAmount').value = '';
+            document.getElementById('adminBonusLimit').value = '';
+            loadAdminBonusCodes();
+        }).catch(err => showCustomAlert("Erreur: " + err.message));
+    }
+
+    function loadAdminBonusCodes() {
+        let tbody = document.getElementById('adminBonusBody');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Chargement...</td></tr>';
+        db.collection("bonusCodes").get().then(snap => {
+            let html = '';
+            snap.forEach(doc => {
+                let data = doc.data();
+                let usedCount = data.usedBy ? data.usedBy.length : 0;
+                html += `<tr>
+                    <td style="font-weight:bold; letter-spacing:1px; color:var(--bonus);">${doc.id}</td>
+                    <td style="color:var(--success); font-weight:bold;">${data.amount}F</td>
+                    <td>${usedCount} / ${data.limit}</td>
+                    <td><button class="admin-action-btn btn-reject" onclick="deleteBonus('${doc.id}')">Supprimer</button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic;">Aucun code généré</td></tr>';
+        }).catch(err => {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--danger);">Erreur: ${err.message}</td></tr>`;
+        });
+    }
+
+    async function deleteBonus(code) {
+        if(await showCustomConfirm("Voulez-vous vraiment supprimer ce code bonus ?")) {
+            db.collection("bonusCodes").doc(code).delete().then(() => {
+                loadAdminBonusCodes();
+            }).catch(err => showCustomAlert("Erreur: " + err.message));
+        }
+    }
+
+    // --- SECTION VIP ADMIN (AJOUTER DES VIPS) ---
+    async function adminCreateVIP() {
+        let name = document.getElementById('adminVipName') ? document.getElementById('adminVipName').value : await showCustomPrompt("Nom du produit VIP (ex: VIP 1) :");
+        if(!name) return;
+        let price = document.getElementById('adminVipPrice') ? parseFloat(document.getElementById('adminVipPrice').value) : parseFloat(await showCustomPrompt("Prix du VIP (ex: 5000) :"));
+        if(!price) return;
+        let daily = document.getElementById('adminVipDaily') ? parseFloat(document.getElementById('adminVipDaily').value) : parseFloat(await showCustomPrompt("Revenu Quotidien (ex: 500) :"));
+        if(!daily) return;
+        let cycle = document.getElementById('adminVipCycle') ? parseInt(document.getElementById('adminVipCycle').value) : parseInt(await showCustomPrompt("Cycle en jours (ex: 30) :"));
+        if(!cycle) return;
+        let image = document.getElementById('adminVipImage') ? document.getElementById('adminVipImage').value : await showCustomPrompt("URL de l'image (laissez vide pour l'image par défaut) :");
+        
+        let total = daily * cycle;
+        
+        db.collection("vips").add({
+            vipName: name,
+            price: price,
+            dailyRate: daily,
+            totalRevenue: total,
+            cycleDays: cycle,
+            imageUrl: image || 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            showCustomAlert("Produit VIP ajouté à la base de données avec succès !");
+            loadDynamicVIPs(); // Met à jour la liste des VIPs sur l'accueil
+        }).catch(err => showCustomAlert("Erreur lors de l'ajout : " + err.message));
+    }
+
+    // Fonction pour afficher les VIPs ajoutés dynamiquement sur la page d'accueil de l'utilisateur
+    function loadDynamicVIPs() {
+        const vipContainer = document.getElementById('dynamicVipContainer'); 
+        if(!vipContainer) return;
+        
+        db.collection("vips").orderBy("price").get().then(snap => {
+            let html = '';
+            snap.forEach(doc => {
+                let v = doc.data();
+                html += `
+                <div style="background: var(--white); border-radius: 12px; margin-bottom: 15px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 5px; color: var(--primary);"><i class="fas fa-crown"></i> ${v.vipName}</h3>
+                    <p style="margin-bottom: 3px;"><strong>Prix :</strong> ${v.price}F</p>
+                    <p style="margin-bottom: 3px;"><strong>Revenu par jour :</strong> <span style="color:var(--success)">${v.dailyRate}F</span></p>
+                    <p style="margin-bottom: 10px;"><strong>Cycle :</strong> ${v.cycleDays} jours (Total: ${v.totalRevenue}F)</p>
+                    <button style="width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;" 
+                            onclick="investProduct(${v.price}, '${v.vipName}', ${v.dailyRate}, ${v.totalRevenue}, ${v.cycleDays}, '${v.imageUrl}')">
+                        Acheter ce VIP
+                    </button>
+                </div>`;
+            });
+            vipContainer.innerHTML = html;
+        }).catch(err => console.error("Erreur chargement VIPs :", err));
+    }
+
+    // --- CHARGER DEPOTS EN ATTENTE ---
+    function loadPendingDeposits() {
+        const tbody = document.getElementById('adminDepositsBody');
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Chargement...</td></tr>';
+        db.collection("deposits").where("status", "==", "pending").get().then(snap => {
+            let html = '';
+            snap.forEach(doc => {
+                let d = doc.data();
+                let dateStr = "-";
+                if(d.createdAt) {
+                    dateStr = d.createdAt.toDate().toLocaleString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+                }
+                html += `<tr>
+                    <td>${dateStr}</td>
+                    <td>${d.phone}</td>
+                    <td>${d.depositNumber || '-'}</td>
+                    <td style="color:var(--success); font-weight:bold;">${d.amount}F</td>
+                    <td>${d.method}</td>
+                    <td>
+                        <button class="admin-action-btn btn-approve" onclick="approveDeposit('${doc.id}', '${d.phone}', ${d.amount})">Valider</button>
+                        <button class="admin-action-btn btn-reject" onclick="rejectDeposit('${doc.id}')">Rejeter</button>
+                    </td>
+                </tr>`;
+            });
+            if(html === '') html = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); font-style:italic;">Aucun dépôt en attente</td></tr>';
+            tbody.innerHTML = html;
+        }).catch(err => {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--danger);">Erreur: ${err.message}</td></tr>`;
+        });
+    }
+
+    function loadConfirmedDeposits() {
+        const tbody = document.getElementById('adminConfirmedDepositsBody');
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Chargement...</td></tr>';
+        db.collection("deposits").where("status", "==", "approved").get().then(snap => {
+            let html = '';
+            snap.forEach(doc => {
+                let d = doc.data();
+                let dateStr = "-";
+                if(d.createdAt) {
+                    dateStr = d.createdAt.toDate().toLocaleString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+                }
+                html += `<tr>
+                    <td>${dateStr}</td>
+                    <td>${d.phone}</td>
+                    <td>${d.depositNumber || '-'}</td>
+                    <td style="color:var(--success); font-weight:bold;">${d.amount}F</td>
+                    <td>${d.method}</td>
+                </tr>`;
+            });
+            if(html === '') html = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); font-style:italic;">Aucun dépôt confirmé</td></tr>';
+            tbody.innerHTML = html;
+        }).catch(err => {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger);">Erreur: ${err.message}</td></tr>`;
+        });
+    }
+
+    async function approveDeposit(docId, phone, amount) {
+        if(!(await showCustomConfirm(`Valider le dépôt de ${amount}F pour ${phone} ?`))) return;
+        
+        db.collection("users").doc(phone).get().then(doc => {
+            if(doc.exists) {
+                let data = doc.data();
+                let amountNum = parseFloat(amount);
+                let newBal = parseFloat(data.balance !== undefined ? data.balance : 0) + amountNum;
+                let newTotal = parseFloat(data.totalDeposited || 0) + amountNum;
+                
+                db.collection("users").doc(phone).update({
+                    balance: newBal,
+                    totalDeposited: newTotal,
+                    hasDeposited: true
+                }).then(() => {
+                    db.collection("deposits").doc(docId).update({status: 'approved'}).then(() => {
+                        showCustomAlert("Dépôt validé avec succès ! Le solde a été crédité automatiquement.");
+                        loadPendingDeposits();
+                        
+                        if(phone === localStorage.getItem('investAppUser')) {
+                            currentBalance = newBal;
+                            updateBalanceUI();
+                        }
+                    });
+                }).catch(err => showCustomAlert("Erreur de mise à jour: " + err.message));
+            }
+        });
+    }
+
+    async function rejectDeposit(docId) {
+        if(!(await showCustomConfirm("Rejeter définitivement ce dépôt ?"))) return;
+        db.collection("deposits").doc(docId).update({status: 'rejected'}).then(() => {
+            showCustomAlert("Dépôt rejeté !");
+            loadPendingDeposits();
+        });
+    }
+
+    // --- CHARGER RETRAITS EN ATTENTE ---
+    function loadPendingWithdrawals() {
+        const tbody = document.getElementById('adminWithdrawalsBody');
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Chargement...</td></tr>';
+        db.collection("withdrawals").where("status", "==", "pending").get().then(snap => {
+            let html = '';
+            snap.forEach(doc => {
+                let d = doc.data();
+                let dateStr = "-";
+                if(d.createdAt) {
+                    dateStr = d.createdAt.toDate().toLocaleString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+                }
+                html += `<tr>
+                    <td>${dateStr}</td>
+                    <td>${d.phone}</td>
+                    <td style="color:var(--primary); font-weight:bold;">${d.accountNumber || '-'}</td>
+                    <td style="color:var(--danger); font-weight:bold;">${d.amount}F</td>
+                    <td style="color:var(--success); font-weight:bold;">${d.netAmount}F</td>
+                    <td>${d.method}</td>
+                    <td>
+                        <button class="admin-action-btn btn-approve" onclick="approveWithdrawal('${doc.id}')">Valider</button>
+                        <button class="admin-action-btn btn-reject" onclick="rejectWithdrawal('${doc.id}', '${d.phone}', ${d.amount})">Rejeter</button>
+                    </td>
+                </tr>`;
+            });
+            if(html === '') html = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); font-style:italic;">Aucun retrait en attente</td></tr>';
+            tbody.innerHTML = html;
+        }).catch(err => {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--danger);">Erreur: ${err.message}</td></tr>`;
+        });
+    }
+    
+    async function approveWithdrawal(docId) {
+        if(!(await showCustomConfirm("Valider ce retrait ?"))) return;
+        db.collection("withdrawals").doc(docId).update({status: 'approved'}).then(() => {
+            showCustomAlert("Retrait validé !");
+            loadPendingWithdrawals();
+            const userPhone = localStorage.getItem('investAppUser');
+            if(userPhone) loadUserWithdrawals(userPhone); 
+        });
+    }
+
+    async function rejectWithdrawal(docId, phone, amount) {
+        if(!(await showCustomConfirm("Rejeter ce retrait et rembourser le solde à l'utilisateur ?"))) return;
+        db.collection("users").doc(phone).get().then(doc => {
+            if(doc.exists) {
+                let data = doc.data();
+                let newBal = (data.balance || 0) + parseFloat(amount);
+                db.collection("users").doc(phone).update({balance: newBal}).then(() => {
+                    db.collection("withdrawals").doc(docId).update({status: 'rejected'}).then(() => {
+                        showCustomAlert("Retrait rejeté et remboursé !");
+                        loadPendingWithdrawals();
+                        const userPhone = localStorage.getItem('investAppUser');
+                        if(userPhone === phone) loadUserWithdrawals(userPhone);
+                    });
+                });
+            }
+        });
+    }
+
+    // --- CHARGER HISTORIQUE RETRAITS UTILISATEUR ---
+    function loadUserWithdrawals(phone) {
+        if(!phone) return;
+        const historyContainer = document.getElementById('historyContainer');
+        historyContainer.innerHTML = '<p style="text-align:center; color: var(--text-muted); font-style: italic; margin-top: 20px;">Chargement de l\'historique...</p>';
+
+        db.collection("withdrawals").where("phone", "==", phone).get().then(snap => {
+            if(snap.empty) {
+                historyContainer.innerHTML = '<p style="text-align:center; color: var(--text-muted); font-style: italic; margin-top: 20px;">Aucun retrait pour le moment.</p>';
+                return;
+            }
+            
+            let withdrawals = [];
+            snap.forEach(doc => withdrawals.push(doc.data()));
+            withdrawals.sort((a, b) => {
+                let tA = a.createdAt ? a.createdAt.toMillis() : 0;
+                let tB = b.createdAt ? b.createdAt.toMillis() : 0;
+                return tB - tA; 
+            });
+
+            let html = '';
+            withdrawals.forEach(d => {
+                let dateStr = "-";
+                if(d.createdAt) {
+                    let dateObj = (typeof d.createdAt.toDate === 'function') ? d.createdAt.toDate() : new Date(d.createdAt);
+                    dateStr = dateObj.toLocaleString('fr-FR', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+                }
+                
+                let statusText = d.status === 'approved' ? '<i class="fas fa-check-circle"></i> Approuvé' : (d.status === 'rejected' ? '<i class="fas fa-times-circle"></i> Rejeté' : '<i class="fas fa-spinner fa-spin"></i> En cours de traitement');
+                let statusColor = d.status === 'approved' ? 'var(--success)' : (d.status === 'rejected' ? 'var(--danger)' : 'var(--accent)');
+
+                html += `
+                <div style="background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid ${statusColor}; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="font-weight: bold; color: var(--text-main);"><i class="fas fa-mobile-alt" style="color: #3b82f6; margin-right: 5px;"></i> ${d.method} (${d.accountNumber || 'Non spécifié'})</span>
+                        <span style="color: var(--accent); font-weight: bold;">+ ${d.netAmount}F (Net)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+                        <span>${dateStr}</span>
+                        <span>Brut: ${d.amount}F</span>
+                    </div>
+                    <div style="font-size: 0.8rem; margin-top: 8px; color: ${statusColor}; font-weight: bold;">
+                        ${statusText}
+                    </div>
+                </div>`;
+            });
+            historyContainer.innerHTML = html;
+        }).catch(err => {
+            console.error("Erreur de chargement des retraits", err);
+            historyContainer.innerHTML = '<p style="text-align:center; color: var(--danger); font-style: italic; margin-top: 20px;">Erreur de chargement.</p>';
+        });
+    }
+
+    // --- VERIFIER ET PAYER LES REVENUS CHAQUE 24H ---
+    function processDailyRevenue(phone) {
+        db.collection("orders").where("phone", "==", phone).get().then(snap => {
+            snap.forEach(doc => {
+                let order = doc.data();
+                if (!order.createdAt) return;
+                
+                let now = new Date().getTime();
+                // Assurer un timestamp valide
+                let startTime = (typeof order.createdAt.toDate === 'function') ? order.createdAt.toDate().getTime() : now;
+                
+                // Récupérer le moment du dernier paiement ou initialiser à la création
+                let lastPaidTime;
+                if (order.lastPaidAt) {
+                    lastPaidTime = (typeof order.lastPaidAt.toDate === 'function') ? order.lastPaidAt.toDate().getTime() : order.lastPaidAt;
+                } else {
+                    lastPaidTime = startTime;
+                }
+                
+                // Calculer le nombre de périodes de 24h (86400000 millisecondes) écoulées
+                let daysPassed = Math.floor((now - lastPaidTime) / (24 * 60 * 60 * 1000));
+                let daysClaimed = order.daysClaimed || 0;
+                let cycleDays = parseInt(order.cycleDays) || 0;
+                
+                if (daysClaimed >= cycleDays) return; // Le cycle complet du VIP a été payé
+                
+                let daysToPay = Math.min(daysPassed, cycleDays - daysClaimed);
+                
+                if (daysToPay > 0) {
+                    let totalToPay = daysToPay * parseFloat(order.dailyRate);
+                    let newLastPaidTime = lastPaidTime + (daysToPay * 24 * 60 * 60 * 1000);
+                    
+                    // Paiement de l'utilisateur
+                    db.collection("users").doc(phone).update({
+                        balance: firebase.firestore.FieldValue.increment(totalToPay)
+                    }).then(() => {
+                        // Mise à jour de la commande avec le nouveau nombre de jours payés
+                        db.collection("orders").doc(doc.id).update({
+                            daysClaimed: daysClaimed + daysToPay,
+                            lastPaidAt: newLastPaidTime
+                        });
+                    }).catch(err => console.error("Erreur d'ajout des revenus journaliers :", err));
+                }
+            });
+        });
+    }
+
+    // --- CHARGER COMMANDES UTILISATEUR ---
+    function loadUserOrders(phone) {
+        if(!phone) return;
+        
+        // On déclenche le calcul des revenus des 24h avant l'affichage
+        processDailyRevenue(phone);
+        
+        const orderContainer = document.getElementById('orderContainer');
+        orderContainer.innerHTML = '<p style="text-align:center; color: var(--text-muted); font-style: italic; margin-top: 20px;">Chargement de vos commandes...</p>';
+        
+        db.collection("orders").where("phone", "==", phone).get().then(snap => {
+            if(snap.empty) {
+                orderContainer.innerHTML = '<p style="text-align:center; color: var(--text-muted); font-style: italic; margin-top: 20px;">Aucune commande pour le moment.</p>';
+                return;
+            }
+
+            let orders = [];
+            snap.forEach(doc => orders.push(doc.data()));
+            orders.sort((a, b) => {
+                let tA = a.createdAt ? a.createdAt.toMillis() : 0;
+                let tB = b.createdAt ? b.createdAt.toMillis() : 0;
+                return tB - tA;
+            });
+
+            let html = '';
+            orders.forEach(d => {
+                let dateStr = "-";
+                if(d.createdAt) {
+                    let dateObj = (typeof d.createdAt.toDate === 'function') ? d.createdAt.toDate() : new Date(d.createdAt);
+                    dateStr = dateObj.toLocaleString('fr-FR', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+                }
+                
+                let claimed = d.daysClaimed || 0;
+                let isCompleted = claimed >= d.cycleDays;
+                let statusMsg = isCompleted ? '<i class="fas fa-check-circle"></i> Cycle terminé' : '<i class="fas fa-sync fa-spin" style="margin-right:5px"></i> Actif et génère des revenus';
+                let statusColor = isCompleted ? 'var(--text-muted)' : 'var(--success)';
+                
+                html += `
+                <div style="background: linear-gradient(145deg, #27272a 0%, #1e1e1e 100%); padding: 0; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; overflow: hidden; align-items: stretch; position: relative;">
+                    <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--primary), var(--bonus));"></div>
+                    <div style="width: 100px; background-image: url('${d.imageUrl || 'https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=500&q=80'}'); background-size: cover; background-position: center; border-right: 1px solid rgba(255,255,255,0.05);"></div>
+                    <div style="padding: 15px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-weight: bold; color: #fff; font-size: 1.05rem;"><i class="fas fa-crown" style="color: #fcd34d; margin-right: 5px;"></i> ${d.vipName}</span>
+                            <span style="color: var(--accent); font-weight: bold;">- ${d.price}F</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">
+                            <span>Quotidien: <b style="color:var(--success)">${d.dailyRate}</b></span>
+                            <span>Total: <b>${d.totalRevenue}</b></span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+                            <span>Cycle: <b style="color:#fff">${claimed}/${d.cycleDays}</b> jours</span>
+                            <span>${dateStr}</span>
+                        </div>
+                        <div style="font-size: 0.8rem; margin-top: 8px; color: ${statusColor}; font-weight: bold;">
+                            ${statusMsg}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            orderContainer.innerHTML = html;
+        }).catch(err => {
+            console.error("Erreur de chargement des commandes", err);
+        });
+    }
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('invite');
+        if (refCode) {
+            document.getElementById('regInvite').value = refCode;
+            document.getElementById('authSection').style.display = 'flex';
+            showSignup(); 
+        }
+
+        const currentUser = localStorage.getItem('investAppUser');
+        if (currentUser) {
+            document.getElementById('authSection').style.display = 'none';
+            checkAdmin(currentUser); 
+            loadUserOrders(currentUser); 
+            loadUserWithdrawals(currentUser); 
+            startUserListener(currentUser); 
+        } else {
+            updateBalanceUI(); 
+        }
+        updateInviteUI();  
+        loadDynamicVIPs(); // On charge les VIP créés par l'admin dès l'ouverture du site
+    };
+
+    function openServiceModal() { document.getElementById('serviceModal').style.display = 'flex'; }
+    function openHistoryModal() { document.getElementById('historyModal').style.display = 'flex'; } 
+    function openOrderModal() { document.getElementById('orderModal').style.display = 'flex'; }
+    function goToWhatsApp() { window.location.href = "https://chat.whatsapp.com/TON_LIEN_ICI"; }
+    function openInviteDetailsModal() { document.getElementById('inviteDetailsModal').style.display = 'flex'; }
+
+    function showLogin() {
+        document.getElementById('signupForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'flex';
+    }
+    function showSignup() {
+        document.getElementById('signupForm').style.display = 'flex';
+        document.getElementById('loginForm').style.display = 'none';
+    }
+
+    function handleSignup() {
+        const countryCode = document.getElementById('regCountryCode').value;
+        const phoneInput = document.getElementById('regPhone').value;
+        const pass = document.getElementById('regPass').value;
+        const confirm = document.getElementById('regPassConfirm').value;
+        const invite = document.getElementById('regInvite').value;
+        
+        if(phoneInput === "" || pass === "") { showCustomAlert("Veuillez remplir tous les champs"); return; }
+        if(pass !== confirm) { showCustomAlert("Les mots de passe ne sont pas identiques"); return; }
+        
+        const fullPhone = countryCode + phoneInput;
+        const myCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        db.collection("users").doc(fullPhone).get().then((doc) => {
+            if (doc.exists) {
+                showCustomAlert("Ce numéro de téléphone est déjà enregistré !");
+            } else {
+                db.collection("users").doc(fullPhone).set({
+                    phone: fullPhone,
+                    password: pass, 
+                    inviteCode: invite, 
+                    myInviteCode: myCode, 
+                    balance: 500, 
+                    totalDeposited: 0,
+                    referralBalance: 0,
+                    commissionA: 0,
+                    commissionB: 0,
+                    commissionC: 0,
+                    isBlocked: false,
+                    hasDeposited: false, 
+                    hasInvested: false, 
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    showCustomAlert("Compte créé avec succès ! Bonus de bienvenue : 500F ajoutés.");
+                    localStorage.setItem('investAppUser', fullPhone);
+                    localStorage.setItem('hasDeposited', 'false');
+                    localStorage.setItem('hasInvested', 'false');
+                    localStorage.setItem('myInviteCode', myCode); 
+                    
+                    startUserListener(fullPhone);
+                    
+                    updateInviteUI(); 
+                    checkAdmin(fullPhone);
+                    loadUserOrders(fullPhone);
+                    loadUserWithdrawals(fullPhone);
+                    document.getElementById('authSection').style.display = 'none';
+                }).catch((error) => {
+                    showCustomAlert("Erreur lors de la création : " + error.message);
+                });
+            }
+        }).catch((error) => {
+            showCustomAlert("Erreur réseau : " + error.message);
+        });
+    }
+
+    function handleLogin() {
+        const countryCode = document.getElementById('logCountryCode').value;
+        const phoneInput = document.getElementById('logPhone').value;
+        const pass = document.getElementById('logPass').value;
+        
+        if(phoneInput === "" || pass === "") { showCustomAlert("Veuillez entrer vos accès"); return; }
+        
+        const fullPhone = countryCode + phoneInput;
+
+        db.collection("users").doc(fullPhone).get().then((doc) => {
+            if (doc.exists) {
+                const userData = doc.data();
+                if (userData.password === pass) {
+                    if(userData.isBlocked) {
+                        showCustomAlert("Accès refusé : Votre compte a été bloqué par l'administrateur.");
+                        return;
+                    }
+                    
+                    localStorage.setItem('investAppUser', fullPhone);
+                    localStorage.setItem('hasDeposited', userData.hasDeposited || 'false');
+                    localStorage.setItem('hasInvested', userData.hasInvested || 'false');
+                    localStorage.setItem('myInviteCode', userData.myInviteCode || fullPhone);
+                    
+                    startUserListener(fullPhone);
+                    
+                    updateInviteUI();
+                    checkAdmin(fullPhone); 
+                    loadUserOrders(fullPhone);
+                    loadUserWithdrawals(fullPhone);
+                    document.getElementById('authSection').style.display = 'none';
+                } else {
+                    showCustomAlert("Mot de passe incorrect.");
+                }
+            } else {
+                showCustomAlert("Ce numéro de téléphone n'est pas enregistré.");
+            }
+        }).catch((error) => {
+            showCustomAlert("Erreur de connexion : " + error.message);
+        });
+    }
+
+    async function logout() {
+        if(await showCustomConfirm("Voulez-vous vous déconnecter ?")) {
+            if(userDocListener) { userDocListener(); userDocListener = null; }
+            localStorage.removeItem('investAppUser');
+            localStorage.removeItem('myInviteCode');
+            document.getElementById('authSection').style.display = 'flex';
+            document.getElementById('adminTab').style.display = 'none';
+            document.getElementById('logPhone').value = "";
+            document.getElementById('logPass').value = "";
+            currentBalance = 500;
+            updateBalanceUI();
+        }
+    }
+
+    let finalAmount = 0;
+
+    function nav(id, el) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        
+        if(id === 'admin') {
+            switchAdminTab('users');
+        }
+    }
+
+    function openRechargeModal() { document.getElementById('rechargeModal').style.display = 'flex'; }
+    
+    function openWithdrawModal() {
+        if(localStorage.getItem('hasDeposited') !== 'true') {
+            showCustomAlert("Action refusée : Vous devez effectuer au moins un dépôt sur la plateforme avant de pouvoir faire un retrait.");
+            return;
+        }
+        document.getElementById('withdrawModal').style.display = 'flex'; 
+    }
+
+    function openLinkAccountModal() { document.getElementById('linkAccountModal').style.display = 'flex'; }
+
+    async function investProduct(price, vipName, dailyRate, totalRevenue, cycleDays, imageUrl) {
+        const userPhone = localStorage.getItem('investAppUser');
+        if(!userPhone) { showCustomAlert("Erreur : Utilisateur non connecté."); return; }
+
+        if(await showCustomConfirm("Voulez-vous investir " + price + "F dans ce produit " + vipName + " ?")) {
+            if (currentBalance >= price) {
+                db.collection("users").doc(userPhone).get().then(doc => {
+                    if (doc.exists) {
+                        let userData = doc.data();
+                        let isFirstInvestment = !userData.hasInvested;
+                        let buyerInviteCode = userData.inviteCode;
+
+                        currentBalance -= price;
+                        updateBalanceUI();
+
+                        db.collection("users").doc(userPhone).update({
+                            balance: currentBalance,
+                            hasInvested: true
+                        }).then(() => {
+                            // Ajout des paramètres pour le tracking des 24h
+                            return db.collection("orders").add({
+                                phone: userPhone,
+                                vipName: vipName,
+                                price: price,
+                                dailyRate: dailyRate,
+                                totalRevenue: totalRevenue,
+                                cycleDays: cycleDays,
+                                imageUrl: imageUrl,
+                                daysClaimed: 0, 
+                                lastPaidAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        }).then(async () => {
+                            if(isFirstInvestment) {
+                                localStorage.setItem('hasInvested', 'true');
+                                distributeCommission(buyerInviteCode, price);
+                                await showCustomAlert("Félicitations pour votre premier investissement ! La commission a été générée et versée à votre parrain.");
+                            } else {
+                                await showCustomAlert("Investissement réussi ! Vous avez acquis le produit " + vipName + ".");
+                            }
+                            loadUserOrders(userPhone);
+                        }).catch(err => {
+                            showCustomAlert("Erreur lors de l'enregistrement de la commande : " + err.message);
+                            currentBalance += price;
+                            updateBalanceUI();
+                        });
+                    }
+                });
+
+            } else {
+                showCustomAlert("Solde insuffisant (" + currentBalance + "F disponibles). Veuillez recharger votre compte pour acheter ce VIP.");
+            }
+        }
+    }
+
+    function saveAccount() {
+        const name = document.getElementById('accName').value;
+        const num = document.getElementById('accNumber').value;
+        const method = document.getElementById('accMethod').value;
+        if(name === "" || num === "") { showCustomAlert("Veuillez remplir tous les champs"); return; }
+        
+        const userPhone = localStorage.getItem('investAppUser');
+        if(userPhone) {
+            db.collection("users").doc(userPhone).update({
+                linkedAccountName: name,
+                linkedAccountNumber: num,
+                linkedAccountMethod: method
+            }).then(() => {
+                document.getElementById('displayName').innerText = name;
+                document.getElementById('displayNum').innerText = num;
+                document.getElementById('displayMethod').innerText = method.toUpperCase();
+                document.getElementById('linkedCardDisplay').style.display = 'block';
+                showCustomAlert("Compte " + method + " lié avec succès !");
+                document.getElementById('linkAccountModal').style.display = 'none';
+            }).catch(err => showCustomAlert("Erreur lors de l'enregistrement : " + err.message));
+        }
+    }
+
+    function calculateFees() {
+        const input = document.getElementById('withdrawAmount');
+        const feeBox = document.getElementById('feeBox');
+        const feeLabel = document.getElementById('feeAmount');
+        const netLabel = document.getElementById('netAmount');
+        const val = parseFloat(input.value);
+        if(val > 0) {
+            feeBox.style.display = 'block';
+            const fees = Math.floor(val * 0.17);
+            const net = val - fees;
+            feeLabel.innerText = fees + "F";
+            netLabel.innerText = net + "F";
+        } else { feeBox.style.display = 'none'; }
+    }
+
+    function setWithdrawQuick(val) {
+        document.getElementById('withdrawAmount').value = val;
+        calculateFees();
+    }
+
+    function handleQuickSelect(amt) {
+        document.getElementById('customAmount').value = amt;
+        goToStep2();
+    }
+
+    function goToStep2() {
+        const amt = document.getElementById('customAmount').value;
+        if(amt < 3000 || amt === "") { showCustomAlert("Le montant minimum est de 3000F"); return; }
+        finalAmount = amt;
+        document.getElementById('rechargeModal').style.display = 'none';
+        document.getElementById('paymentModal').style.display = 'flex';
+        document.getElementById('displayAmount').innerText = finalAmount + "F CFA";
+        handleCountryChange();
+    }
+
+    function handleCountryChange() {
+        const country = document.getElementById('userCountrySelect').value;
+        const methodSelect = document.getElementById('paymentMethodSelect');
+        if (country === "Côte d'Ivoire") {
+            methodSelect.innerHTML = '<option value="Wave">Wave 🌊</option>';
+        } else {
+            methodSelect.innerHTML = `<option value="Orange Money">Orange Money 🟠</option><option value="Moov Money">Moov Money 🔵</option>`;
+        }
+        updatePaymentInstructions();
+    }
+
+    function updatePaymentInstructions() {
+        const method = document.getElementById('paymentMethodSelect').value;
+        const ussdLabel = document.getElementById('ussdCode');
+        const nameLabel = document.getElementById('beneficiaryName');
+        const labelCode = document.getElementById('labelCode');
+        if (method === "Orange Money") {
+            labelCode.innerText = "Code de transfert :";
+            ussdLabel.innerText = `*144*2*1*56734099*${finalAmount}#`;
+            nameLabel.innerText = "sita Ouattara";
+        } else if (method === "Moov Money") {
+            labelCode.innerText = "Code de transfert :";
+            ussdLabel.innerText = `*555*2*1*02786063*${finalAmount}#`;
+            nameLabel.innerText = "king super";
+        } else if (method === "Wave") {
+            labelCode.innerText = "Numéro Wave :";
+            ussdLabel.innerText = "02786063"; 
+            nameLabel.innerText = "INVEST SERVICE CI";
+        }
+    }
+
+    function launchUSSD() {
+        const method = document.getElementById('paymentMethodSelect').value;
+        if (method === "Wave") return; 
+        let code = method === "Orange Money" ? `*144*2*1*56734099*${finalAmount}#` : `*555*2*1*02786063*${finalAmount}#`;
+        window.location.href = "tel:" + code.replace("#", "%23");
+    }
+
+    function backToStep1() {
+        document.getElementById('paymentModal').style.display = 'none';
+        document.getElementById('rechargeModal').style.display = 'flex';
+    }
+
+    function confirmDeposit() {
+        const number = document.getElementById('userNumber').value;
+        const method = document.getElementById('paymentMethodSelect').value;
+        if(number.length < 8) { showCustomAlert("Veuillez entrer un numéro valide"); return; }
+        
+        const userPhone = localStorage.getItem('investAppUser');
+        if(!userPhone) { showCustomAlert("Erreur : Utilisateur non identifié."); return; }
+
+        db.collection("deposits").add({
+            phone: userPhone,
+            depositNumber: number, 
+            amount: parseFloat(finalAmount),
+            method: method,
+            status: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            if (method !== "Wave") { launchUSSD(); }
+            showCustomAlert("Demande de dépôt de " + finalAmount + "F envoyée avec succès !\n\nEn attente de validation par l'administrateur.");
+            document.getElementById('paymentModal').style.display = 'none';
+        }).catch(err => {
+            showCustomAlert("Erreur lors de la demande : " + err.message);
+        });
+    }
+
+    function confirmWithdraw() {
+        if(localStorage.getItem('hasDeposited') !== 'true') {
+            showCustomAlert("Action refusée : Vous devez effectuer au moins un dépôt avant de pouvoir retirer vos fonds.");
+            return;
+        }
+        
+        const accountNum = document.getElementById('displayNum').innerText;
+        if(accountNum === "00 00 00 00 00" || document.getElementById('linkedCardDisplay').style.display === 'none') {
+            showCustomAlert("Veuillez d'abord lier un compte de retrait (Menu 'Mien' > 'Lier un compte').");
+            return;
+        }
+
+        const amt = parseFloat(document.getElementById('withdrawAmount').value);
+        if(!amt || amt < 500) { showCustomAlert("Le retrait minimum est de 500F"); return; }
+        if(amt > currentBalance) { showCustomAlert("Solde insuffisant pour effectuer ce retrait."); return; }
+        
+        const now = new Date(); const hour = now.getHours();
+        if (hour < 10 || hour >= 17) { showCustomAlert("Les retraits sont uniquement possibles entre 10h00 et 17h00."); return; }
+
+        currentBalance -= amt;
+        updateBalanceUI();
+
+        const methodDisplay = document.getElementById('displayMethod').innerText || "Moyen de paiement";
+        const netAmt = amt - Math.floor(amt * 0.17);
+        
+        const userPhone = localStorage.getItem('investAppUser');
+
+        db.collection("users").doc(userPhone).update({
+            balance: currentBalance
+        }).then(() => {
+            return db.collection("withdrawals").add({
+                phone: userPhone,
+                amount: amt,
+                netAmount: netAmt,
+                method: methodDisplay,
+                accountNumber: accountNum, 
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }).then(() => {
+            showCustomAlert("Demande de retrait de " + amt + "F envoyée vers le numéro " + accountNum + " !");
+            document.getElementById('withdrawModal').style.display = 'none';
+            
+            loadUserWithdrawals(userPhone);
+        }).catch(err => {
+            showCustomAlert("Erreur lors de la demande de retrait : " + err.message);
+            currentBalance += amt;
+            updateBalanceUI();
+        });
+    }
+
+    function openBonusModal() { document.getElementById('bonusModal').style.display = 'flex'; }
+    
+    function closeBonusModal() {
+        const code = document.getElementById('bonusCodeInput').value.trim().toUpperCase();
+        if(!code) {
+            document.getElementById('bonusModal').style.display = 'none';
+            return;
+        }
+
+        const userPhone = localStorage.getItem('investAppUser');
+        if(!userPhone) return;
+
+        db.collection("bonusCodes").doc(code).get().then(doc => {
+            if(!doc.exists) {
+                showCustomAlert("Ce code bonus n'existe pas ou a expiré.");
+                return;
+            }
+            let data = doc.data();
+            let usedBy = data.usedBy || [];
+            
+            if(usedBy.includes(userPhone)) {
+                showCustomAlert("Vous avez déjà utilisé ce code bonus !");
+                return;
+            }
+            
+            if(usedBy.length >= data.limit) {
+                showCustomAlert("Ce code bonus a atteint sa limite maximale d'utilisation.");
+                return;
+            }
+
+            // Ajoute l'utilisateur à la liste et crédite le montant
+            db.collection("bonusCodes").doc(code).update({
+                usedBy: firebase.firestore.FieldValue.arrayUnion(userPhone)
+            }).then(() => {
+                return db.collection("users").doc(userPhone).update({
+                    balance: firebase.firestore.FieldValue.increment(data.amount)
+                });
+            }).then(() => {
+                showCustomAlert(`Félicitations ! Vous avez reçu un bonus de ${data.amount}F.`);
+                document.getElementById('bonusModal').style.display = 'none';
+                document.getElementById('bonusCodeInput').value = '';
+            }).catch(err => {
+                showCustomAlert("Erreur lors de l'activation : " + err.message);
+            });
+        }).catch(err => {
+            showCustomAlert("Erreur de vérification : " + err.message);
+        });
+    }
+</script>
+</body>
+</html>
+
